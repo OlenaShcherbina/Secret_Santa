@@ -1,12 +1,7 @@
 package com.example.santa.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 @Getter
 public class AccountViewDTO {
