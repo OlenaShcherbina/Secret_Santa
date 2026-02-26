@@ -1,7 +1,7 @@
 package com.example.santa.exception;
 
 public class DuplicateEntityException extends RuntimeException{
-    DuplicateEntityException(String msg){
+    public DuplicateEntityException(String msg){
         super(msg);
     }
 }
