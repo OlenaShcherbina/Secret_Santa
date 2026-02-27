@@ -23,17 +23,14 @@ public class AccountService {
 
     @Transactional
    public AccountResponseDTO create(AccountDTO accountDTO){
-        //TODO: maybe add email validation
-      if(accountDTO.getEmail() == null || accountDTO.getEmail().isBlank()){
-          throw new InvalidOperationException("Email must not be blank");
-      }
-        String email = accountDTO.getEmail().trim();
-      accountDTO.setEmail(email);
 
-       if(accountRepository.findByEmail(accountDTO.getEmail()).isPresent()){
+      validateEmail(accountDTO.getEmail());
+      String email = accountDTO.getEmail().trim();
+      accountDTO.setEmail(email);
+        if(accountRepository.findByEmail(email).isPresent()){
             throw new DuplicateEntityException("Account with "
-                    + accountDTO.getEmail() + " already exists!");
-       }
+                    + email + " already exists!");
+        }
 
         //check password and hash it
         validatePassword(accountDTO.getPassword());
@@ -44,20 +41,39 @@ public class AccountService {
 
         return accountMapper.toResponseDto(accountRepository.save(account));
 
-
    }
+/*
+    public AccountResponseDTO find(AccountDTO accountDTO){
+        //find by email
+        validateEmail(accountDTO.getEmail());
+        validatePassword(accountDTO.getPassword());
 
+        Account account = accountRepository.findByEmail(accountDTO.getEmail().trim())
+                .orElseThrow(
+                        () -> new NotFoundException("Account with email: " + accountDTO.getEmail() + " not found")
+                );
+        //check pass
 
-
-
-
-   private void validatePassword(String password){
+        if(passwordEncoder.matches(accountDTO.getPassword(), account.getPassword())){
+            return accountMapper.toResponseDto(account);
+        }else{
+            throw new InvalidOperationException("Wrong password");
+        }
+    }
+*/
+    private void validatePassword(String password){
         if(password == null || password.isBlank()){
             throw new InvalidOperationException("Password must not be blank");
         }
         if(password.length() < 5){
             throw new InvalidOperationException("Password length must be at least 5");
         }
+   }
+   private void validateEmail(String email){
+       if(email == null || email.isBlank()){
+           throw new InvalidOperationException("Email must not be blank");
+       }
+
    }
 
 
